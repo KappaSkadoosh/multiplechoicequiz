@@ -17,6 +17,9 @@ import android.widget.TextView;
 import android.content.Context;
 import android.widget.Toast;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import static android.R.attr.drawable;
 import static android.R.attr.id;
 import static com.example.kappa.quiz.R.id.streak;
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private int i = 0;
     private int FHighScore, FHighStreak;
 
+    //array of image reference
     int[] myImageList = new int[]{R.drawable.img1, R.drawable.img2, R.drawable.img3,R.drawable.img4,
             R.drawable.img5,R.drawable.img6,R.drawable.img7,R.drawable.img8,R.drawable.img9,
             R.drawable.img10,R.drawable.img11,R.drawable.img12,R.drawable.img13,R.drawable.img14,
@@ -56,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        LoadScore();
+        LoadStreak();
 
 
         ViewScore = (TextView) findViewById(R.id.score);
@@ -103,6 +110,9 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                  else{
+                    //if incorrect answer is chosen, streak will end player will not receive bonus points
+                    mStreak=0;
+                    updatestreak(mStreak);
                     //chance if reduced if answer is wrong
                     chance--;
                 //toast to show if the answer is incorrect
@@ -133,7 +143,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, (R.string.Correct), Toast.LENGTH_SHORT).show();
                 }
                  else{
-
+                    mStreak=0;
+                    updatestreak(mStreak);
                     chance--;
                 Toast.makeText(MainActivity.this, (R.string.Incorrect), Toast.LENGTH_SHORT).show();
                 updatchance(chance);
@@ -160,7 +171,8 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, (R.string.Correct), Toast.LENGTH_SHORT).show();
 
                 } else{
-
+                    mStreak=0;
+                    updatestreak(mStreak);
                     chance--;
                 Toast.makeText(MainActivity.this, (R.string.Incorrect), Toast.LENGTH_SHORT).show();
                 updatchance(chance);
@@ -171,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    //update questions and choices
     public void updatequestion() {
         ViewQuestion.setText(QuestionLibrary.getQuestion(mQuestionNumber));
         choice1.setText(QuestionLibrary.getChoice1(mQuestionNumber));
@@ -190,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
         ViewScore.setText("" + mScore);
     }
 
+    //bonus if player answer certain number of questions correctly in a row
     private void calcScore(){
         if (mStreak < 3) {
             mScore = mScore + 100;
@@ -211,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
             mScore = mScore + 200;
     }
 
+    //update chances on textview
     private void updatestreak(int astreak) {
         ViewStreak.setText("" + mStreak);
     }
@@ -220,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
+    //show end game dialog and allow user to choose if they want to replay or return to menu
     private void endGame() {
         //show end game alert dialog
         TextView dialogTitle = new TextView(this);
@@ -270,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    //SharedPreferences save score
+    //save score using SharedPreferences
     public void SaveScore(String HighScore, int score2) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
@@ -278,13 +292,13 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    //SharedPreferences load score
+    //load score using SharedPreferences
     public void LoadScore() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         prevHighScore = prefs.getInt("HighScore", 0);
     }
 
-    //SharedPreferences save streak
+    //save streak using SharedPreferences
     public void SaveStreak(String Streak, int streakFinal) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor editor = prefs.edit();
@@ -292,20 +306,20 @@ public class MainActivity extends AppCompatActivity {
         editor.commit();
     }
 
-    //SharedPreferences load streak
+    //load streak using SharedPreferences
     public void LoadStreak() {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         prevStreak = prefs.getInt("Streak", 0);
     }
 
-    //compare current streak and game session highest streak
+    //compare current streak and highest streak
     private void compareStreak() {
         if (mStreak > streakFinal) {
             streakFinal = mStreak;
         }
     }
 
-    //compare session streak and previous top streak
+    //compare session streak and previous longest streak
     private void endGameStreak() {
         if (streakFinal > prevStreak) {
             SaveStreak("Streak", streakFinal);
