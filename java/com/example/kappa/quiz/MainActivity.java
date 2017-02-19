@@ -2,6 +2,7 @@ package com.example.kappa.quiz;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.preference.PreferenceManager;
 import android.support.annotation.DrawableRes;
 import android.support.v7.app.AlertDialog;
@@ -16,10 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.content.Context;
 import android.widget.Toast;
-
 import java.util.Collection;
 import java.util.Collections;
-
 import static android.R.attr.drawable;
 import static android.R.attr.id;
 import static com.example.kappa.quiz.R.id.streak;
@@ -48,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
     private int chance = 5;
     private int mQuestionNumber = 0;
     private int i = 0;
-    private int FHighScore, FHighStreak;
+
 
     //array of image reference
     int[] myImageList = new int[]{R.drawable.img1, R.drawable.img2, R.drawable.img3,R.drawable.img4,
             R.drawable.img5,R.drawable.img6,R.drawable.img7,R.drawable.img8,R.drawable.img9,
             R.drawable.img10,R.drawable.img11,R.drawable.img12,R.drawable.img13,R.drawable.img14,
-            R.drawable.img15,R.drawable.img16,R.drawable.img17,R.drawable.wk};
+            R.drawable.img15,R.drawable.img16,R.drawable.img17,R.drawable.img17};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         LoadScore();
         LoadStreak();
 
-
+        final MediaPlayer COIN= MediaPlayer.create(this,R.raw.coins);
         ViewScore = (TextView) findViewById(R.id.score);
         ViewStreak = (TextView) findViewById(R.id.streak);
         ViewChance = (TextView) findViewById(R.id.chance);
@@ -102,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                     updatequestion();
                     //update image for each question
                     updateimage();
+                    COIN.start();//play a sound when answer is correct
                     if (mQuestionNumber==18){
                         endGame();
                     }
@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
                     compareStreak();
                     updatequestion();
                     updateimage();
+                    COIN.start();
                     if (mQuestionNumber==18){
                         endGame();
                     }
@@ -165,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                     compareStreak();
                     updatequestion();
                     updateimage();
+                    COIN.start();
                     if (mQuestionNumber==18){
                         endGame();
                     }
